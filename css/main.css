@@ -1,20 +1,34 @@
 /*모바일first로 작성 후 미디어쿼리에서 확장하는 방식*/
+:root{
+  --apple_black: rgb(29, 29, 31);
+  --apple_grey: #888;
+  --yellow: #e9dd2b;
+  --black: #000;
+  --white: #fff;
+}
 html{
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 14px;
 }
 body{
   overflow-x: hidden;
-  color: rgb(29, 29, 31); /*애플 공식*/
+  color: var(--apple_black);
   letter-spacing: -0.05em;
-  background: white;
 }
 p{
   line-height: 1.6;
 }
 a{
-  color: rgb(29, 29, 31);
+  color: var(--apple_black);
   text-decoration: none;
+}
+
+body.before-load {
+  overflow: hidden;
+}
+.container {
+  /*iPone 가로 스크롤 방지*/
+  overflow-x: hidden;
 }
 .global-nav{
   position: absolute; /*헤더 공간 차지하지 않도록(스크롤 처리 시)*/
@@ -39,6 +53,7 @@ a{
   position: fixed;
   top: 0;
   background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: saturate(180%) blur(15px); /*ios 버전*/
   backdrop-filter: saturate(180%) blur(15px); /*뿌옇게 처리*/
 }
 .global-nav-links,
@@ -74,7 +89,7 @@ a{
   font-size: 4rem; /*14px(html지정)*4*/
   text-align: center;
   /*추가*/
-  color: #e9dd2b;
+  color: var(--yellow);
 }
 .main-message{ /*줄수 상관없이 세로방향 중앙정렬*/
   display: flex;
@@ -104,23 +119,23 @@ a{
   margin: 0 auto;
   padding: 0 1rem;/*메뉴명과 좌우패딩 맞춤*/
   font-size: 1.2rem;
-  color: #888;
+  color: var(--apple_grey);
 }
 .description strong{
   float: left;
   margin-right: 0.2em; /*위와 마찬가지로 이 글자 크기의 0.2배 정도 여백을 하고 싶어서(계산 쉬움)*/
   font-size: 3rem;
-  color: rgb(29, 29, 31);
+  color: var(--apple_black);
 }
-.desc-message{
-  width: 50%;
-  font-weight: bold;
-  opacity: 0;
+.sticky-elem.desc-message {
+	width: 45%;
+	font-weight: bold;
+	opacity: 0;
 }
 .pin{
   width: 1px;
   height: 100px;
-  background-color: rgb(29, 29, 31);
+  background-color: var(--apple_black);
 }
 #scroll-section-2 .b{
   top: 10%;
@@ -135,25 +150,25 @@ a{
   margin: 0 auto;
   padding: 0 1rem;
   font-size: 2rem;
-  color: #888;
+  color: var(--apple_grey);
 }
 .mid-message strong{
-  color: rgb(29, 29, 31);
+  color: var(--apple_black);
 }
 .canvas-caption{
   max-width: 1000px;
-  margin: -8em auto 0;
+  margin: -24rem auto 0; /*모바일용 문단 높이*/
   padding: 0 1rem;
   font-size: 1.2rem;
-  color: #888;
+  color: var(--apple_grey);
 }
 .footer{
   display: flex;
   align-items: center;
   justify-content: center;
   height: 7rem;
-  background-color: darkorange;
-  color: white;
+  background-color: var(--yellow);
+  color: var(--white);
 }
 .sticky-elem{
   display: none;
@@ -166,6 +181,10 @@ a{
 #show-scene-2 #scroll-section-2 .sticky-elem,
 #show-scene-3 #scroll-section-3 .sticky-elem{ 
   display: block;
+  will-change: transform, opacity; /*메모리 사용량 증가(퍼포먼스 향상 효과)*/
+}
+.scroll-effect-end .sticky-elem {
+  display: none !important;
 }
 .sticky-elem-canvas{
   top: 0;
@@ -185,6 +204,52 @@ a{
   position: fixed;
   top: 0;
 	z-index: 10;
+}
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  background: var(--white);
+  opacity: 0;
+  transition: 0.5s;
+}
+.before-load .container { /*새로고침 버그 수정*/
+  display: none; 
+}
+.before-load .loading {
+  opacity: 1;
+}
+@keyframes loading-spin {
+  100% { transform: rotate(360deg); }
+}
+@keyframes loading-circle-ani {
+  0% { stroke-dashoffset: 157; }
+  75% { stroke-dashoffset: -147; }
+  100% { stroke-dashoffset: -157; }
+}
+.loading-circle {
+  width: 54px;
+  height: 54px;
+  animation: loading-spin 3s infinite;
+}
+.loading-circle circle {
+  stroke: var(--black);
+  stroke-width: 4;
+  /*getTotalLength()로 storke의 길이를 얻어올 수 있음*/
+  stroke-dasharray: 157;
+  stroke-dashoffset: 0;
+  fill: transparent;
+  animation: loading-circle-ani 1s infinite;
+}
+
+.normal-content {
+  margin-bottom: 10rem;
 }
 
 @media (min-width: 1024px){
@@ -207,9 +272,9 @@ a{
   .main-message small{
     font-size: 1.5vw;
   }
-  .desc-message{
-    width: 20%;
-  }
+  .sticky-elem.desc-message {
+		width: 20%;
+	}
   #scroll-section-2 .b{
     top: 20%;
     left: 53%;
